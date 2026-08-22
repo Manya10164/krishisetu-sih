@@ -3,135 +3,177 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KrishiSetu — Smart Agro-AI</title>
+  <title>KrishiSetu — Smart Agro-AI Diagnostic Platform</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- ResponsiveVoice CDN for Smooth Voice Output -->
   <script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE_KEY"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <style> body { font-family: 'Plus Jakarta Sans', sans-serif; } </style>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
+                  #f8fafc;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+<body class="text-slate-800 min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
 
-  <!-- Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-xl shadow-md">
-          <i class="fa-solid fa-seedling"></i>
+  <!-- Vibrant Header -->
+  <header class="bg-white/80 backdrop-blur-md border-b border-emerald-100 sticky top-0 z-50 shadow-sm shadow-emerald-500/5">
+    <div class="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-emerald-500/30 transform hover:rotate-6 transition-transform">
+          <i class="fa-solid fa-leaf"></i>
         </div>
         <div>
-          <h1 class="text-lg font-black text-slate-900 leading-tight">KrishiSetu <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold ml-1">SIH 2026</span></h1>
-          <p class="text-xs text-slate-500">ABES Engineering College</p>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-black bg-gradient-to-r from-emerald-900 via-emerald-700 to-teal-600 bg-clip-text text-transparent tracking-tight">KrishiSetu</h1>
+            <span class="text-[10px] uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-2 py-0.5 rounded-full font-extrabold shadow-sm">AI 2026</span>
+          </div>
+          <p class="text-xs font-semibold text-slate-400">Smart India Hackathon • ABESEC</p>
         </div>
       </div>
       
-      <!-- Full Page Language Switcher -->
+      <!-- Controls -->
       <div class="flex items-center gap-3">
-        <div class="bg-slate-100 p-1 rounded-xl border border-slate-200 flex items-center gap-1">
-          <button id="langHiBtn" onclick="setAppLanguage('hi')" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-sm transition">हिंदी</button>
-          <button id="langEnBtn" onclick="setAppLanguage('en')" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-900 transition">English</button>
+        <div class="bg-slate-100/80 p-1 rounded-xl border border-slate-200/80 flex items-center gap-1 shadow-inner">
+          <button id="langHiBtn" onclick="setAppLanguage('hi')" class="px-3 py-1.5 text-xs font-extrabold rounded-lg bg-emerald-600 text-white shadow-md shadow-emerald-600/20 transition-all">हिंदी</button>
+          <button id="langEnBtn" onclick="setAppLanguage('en')" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-900 transition-all">English</button>
         </div>
-        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> <span id="txtOnlineStatus">एज AI सक्रिय</span>
+        <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          <span id="txtOnlineStatus">एज AI सक्रिय</span>
         </span>
       </div>
     </div>
   </header>
 
-  <!-- Main Grid -->
+  <!-- Main Workspace -->
   <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
     
-    <!-- Upload Panel -->
-    <div class="lg:col-span-5 space-y-4">
-      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-        <h2 class="text-sm font-bold text-slate-900 mb-1 flex items-center gap-2">
-          <i class="fa-solid fa-camera text-emerald-600"></i> 
+    <!-- Left Column: Upload Scanner -->
+    <div class="lg:col-span-5 space-y-5">
+      <div class="glass-card p-6 rounded-3xl shadow-xl shadow-slate-200/50 relative overflow-hidden">
+        <div class="absolute -top-10 -right-10 w-28 h-28 bg-emerald-500/10 rounded-full blur-2xl"></div>
+        
+        <h2 class="text-base font-extrabold text-slate-900 mb-1 flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs">
+            <i class="fa-solid fa-camera"></i>
+          </span>
           <span id="txtUploadTitle">पौधे की पत्ती स्कैन करें</span>
         </h2>
-        <p id="txtUploadDesc" class="text-xs text-slate-500 mb-4">रोग की पहचान के लिए पौधे की पत्ती की फोटो अपलोड करें।</p>
+        <p id="txtUploadDesc" class="text-xs text-slate-500 mb-5">रोग की पहचान के लिए पौधे की पत्ती की फोटो अपलोड करें।</p>
 
-        <label for="imageUpload" class="border-2 border-dashed border-slate-300 hover:border-emerald-500 bg-slate-50 hover:bg-emerald-50/30 transition rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer text-center">
-          <img id="previewImg" class="hidden w-full h-44 object-cover rounded-lg mb-2 shadow-inner" />
-          <div id="dropzonePlaceholder" class="space-y-2 py-4">
-            <div class="w-12 h-12 bg-white rounded-full shadow flex items-center justify-center mx-auto text-emerald-600 text-lg">
+        <!-- Dynamic Dropzone -->
+        <label for="imageUpload" class="border-2 border-dashed border-emerald-300 hover:border-emerald-500 bg-emerald-50/30 hover:bg-emerald-50/70 transition-all duration-300 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer text-center relative overflow-hidden group">
+          <img id="previewImg" class="hidden w-full h-48 object-cover rounded-xl mb-2 shadow-md ring-2 ring-emerald-400/40" />
+          <div id="dropzonePlaceholder" class="space-y-3 py-3">
+            <div class="w-14 h-14 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-2xl shadow-lg shadow-emerald-500/30 flex items-center justify-center mx-auto text-white text-xl group-hover:scale-110 transition-transform">
               <i class="fa-solid fa-cloud-arrow-up"></i>
             </div>
-            <p id="txtUploadPrompt" class="text-xs font-bold text-slate-700">पत्ती की फोटो चुनें या यहाँ छोड़ें</p>
+            <p id="txtUploadPrompt" class="text-xs font-bold text-slate-700">पत्ती की फोटो चुनें या यहाँ खींचें</p>
+            <span class="inline-block text-[11px] text-emerald-700 font-semibold bg-emerald-100/60 px-2.5 py-0.5 rounded-full">JPG, PNG supported</span>
           </div>
           <input type="file" id="imageUpload" accept="image/*" class="hidden" onchange="handleImageSelect(event)" />
         </label>
 
-        <button id="analyzeBtn" onclick="runDiagnosis()" disabled class="w-full mt-4 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white font-bold rounded-xl transition shadow flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed">
-          <i class="fa-solid fa-microchip"></i> <span id="txtBtnDiagnose">AI द्वारा रोग पहचानें</span>
+        <!-- Diagnose Action Button -->
+        <button id="analyzeBtn" onclick="runDiagnosis()" disabled class="w-full mt-5 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:from-slate-200 disabled:to-slate-300 text-white font-extrabold rounded-2xl transition-all duration-300 shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed transform active:scale-[0.98]">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="txtBtnDiagnose">AI द्वारा रोग पहचानें</span>
         </button>
       </div>
 
-      <!-- Quick Jury Buttons -->
-      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">त्वरित परीक्षण (Quick Samples)</p>
-        <div class="grid grid-cols-3 gap-1.5">
-          <button onclick="loadSample(0)" class="p-2 border border-slate-200 rounded-lg text-xs font-semibold hover:bg-emerald-50 text-left">🍂 Leaf Spot</button>
-          <button onclick="loadSample(1)" class="p-2 border border-slate-200 rounded-lg text-xs font-semibold hover:bg-emerald-50 text-left">🍅 Blight</button>
-          <button onclick="loadSample(3)" class="p-2 border border-slate-200 rounded-lg text-xs font-semibold hover:bg-emerald-50 text-left">🌿 Healthy</button>
+      <!-- Quick Preset Chips -->
+      <div class="glass-card p-5 rounded-3xl shadow-sm">
+        <p class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
+          <i class="fa-solid fa-bolt text-amber-500"></i> <span id="txtQuickDemoLabel">त्वरित परीक्षण (Demo Presets)</span>
+        </p>
+        <div class="grid grid-cols-3 gap-2">
+          <button onclick="loadSample(0)" class="p-2.5 bg-slate-50 hover:bg-emerald-50 border border-slate-200/80 hover:border-emerald-300 rounded-xl text-xs font-bold text-slate-700 hover:text-emerald-800 transition-all text-left">🍂 Leaf Spot</button>
+          <button onclick="loadSample(1)" class="p-2.5 bg-slate-50 hover:bg-emerald-50 border border-slate-200/80 hover:border-emerald-300 rounded-xl text-xs font-bold text-slate-700 hover:text-emerald-800 transition-all text-left">🍅 Blight</button>
+          <button onclick="loadSample(3)" class="p-2.5 bg-slate-50 hover:bg-emerald-50 border border-slate-200/80 hover:border-emerald-300 rounded-xl text-xs font-bold text-slate-700 hover:text-emerald-800 transition-all text-left">🌿 Healthy</button>
         </div>
       </div>
     </div>
 
-    <!-- Result Display -->
+    <!-- Right Column: Visual Result Deck -->
     <div class="lg:col-span-7">
-      <div id="emptyState" class="h-full min-h-[300px] bg-white rounded-2xl border border-dashed border-slate-300 flex flex-col items-center justify-center text-center p-8 text-slate-400">
-        <i class="fa-solid fa-clipboard-check text-4xl mb-3 text-slate-300"></i>
-        <h3 id="txtEmptyTitle" class="text-sm font-bold text-slate-600">पत्ती स्कैन की प्रतीक्षा है</h3>
-        <p id="txtEmptyDesc" class="text-xs max-w-xs mt-1">अपनी पत्ती की फोटो अपलोड करें और 'AI द्वारा रोग पहचानें' पर क्लिक करें।</p>
+      <div id="emptyState" class="h-full min-h-[360px] glass-card rounded-3xl border-2 border-dashed border-slate-300/80 flex flex-col items-center justify-center text-center p-8 text-slate-400">
+        <div class="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center text-2xl mb-4 shadow-inner">
+          <i class="fa-solid fa-microchip"></i>
+        </div>
+        <h3 id="txtEmptyTitle" class="text-base font-bold text-slate-700">पत्ती स्कैन की प्रतीक्षा है</h3>
+        <p id="txtEmptyDesc" class="text-xs max-w-xs mt-1.5 text-slate-400">अपनी पत्ती की फोटो अपलोड करें और 'AI द्वारा रोग पहचानें' पर क्लिक करें।</p>
       </div>
 
-      <div id="resultCard" class="hidden space-y-4">
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <div class="flex items-start justify-between">
+      <div id="resultCard" class="hidden space-y-5">
+        <!-- Diagnosis Core Banner -->
+        <div class="glass-card p-6 rounded-3xl shadow-xl shadow-slate-200/50 border-l-4 border-l-emerald-500 relative overflow-hidden">
+          <div class="flex items-start justify-between gap-4">
             <div>
-              <span id="cropTag" class="text-xs font-bold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-md">फसल</span>
-              <h2 id="diseaseTitle" class="text-xl font-extrabold text-slate-900 mt-2">रोग का नाम</h2>
-              <p id="severityText" class="text-xs text-amber-600 font-semibold mt-1"></p>
+              <span id="cropTag" class="text-[11px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 px-3 py-1 rounded-lg">फसल</span>
+              <h2 id="diseaseTitle" class="text-2xl font-black text-slate-900 mt-2 tracking-tight">रोग का नाम</h2>
+              <p id="severityText" class="text-xs text-amber-600 font-bold mt-1.5 flex items-center gap-1.5"></p>
             </div>
-            <div class="text-right">
-              <span class="text-2xl font-black text-emerald-600" id="confScore">--</span>
-              <p id="txtConfLabel" class="text-[10px] uppercase font-bold text-slate-400">सटीकता</p>
+            <div class="bg-emerald-50/80 border border-emerald-200/80 p-3 rounded-2xl text-right">
+              <span class="text-3xl font-black bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent" id="confScore">--</span>
+              <p id="txtConfLabel" class="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider">सटीकता</p>
             </div>
           </div>
 
-          <!-- Direct Voice Bar with Dual Audio Buttons -->
-          <div class="mt-5 p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-3">
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-volume-high text-emerald-600"></i>
-              <p id="txtVoiceBarTitle" class="text-xs font-bold text-slate-900">वॉइस सलाह सुनें (Listen Voice Advisory)</p>
+          <!-- High-Contrast Audio Box -->
+          <div class="mt-6 p-4 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl text-white shadow-lg shadow-emerald-600/20 space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white text-sm">
+                  <i class="fa-solid fa-volume-high animate-pulse"></i>
+                </div>
+                <div>
+                  <p id="txtVoiceBarTitle" class="text-xs font-black">वॉइस सलाह सुनें</p>
+                  <p class="text-[10px] text-emerald-100">Bilingual Voice Guidance Engine</p>
+                </div>
+              </div>
             </div>
             
-            <div class="grid grid-cols-2 gap-3">
-              <button onclick="playVoiceAudio('hi')" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition cursor-pointer">
-                <i class="fa-solid fa-play"></i> हिंदी में सुनें (Hindi Voice)
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+              <button onclick="playVoiceAudio('hi')" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-white text-emerald-900 hover:bg-emerald-50 font-black text-xs rounded-xl shadow-md transition cursor-pointer">
+                <i class="fa-solid fa-play text-emerald-600"></i> हिंदी में सुनें
               </button>
-              <button onclick="playVoiceAudio('en')" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 font-bold text-xs rounded-xl shadow-sm transition cursor-pointer">
-                <i class="fa-solid fa-play text-slate-500"></i> Listen in English
+              <button onclick="playVoiceAudio('en')" class="flex items-center justify-center gap-2 py-2.5 px-4 bg-emerald-900/40 hover:bg-emerald-900/60 text-white font-bold text-xs rounded-xl border border-white/20 shadow-sm transition cursor-pointer">
+                <i class="fa-solid fa-play text-teal-300"></i> Listen in English
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Recommendations Grid -->
+        <!-- Treatment Recommendations -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="bg-white p-5 rounded-xl border border-emerald-100 shadow-sm">
-            <div class="flex items-center gap-2 text-emerald-700 font-bold text-xs mb-2">
-              <i class="fa-solid fa-leaf"></i> <span id="txtOrganicLabel">जैविक उपचार</span>
+          <!-- Organic -->
+          <div class="glass-card p-5 rounded-3xl border-t-4 border-t-emerald-500 shadow-md">
+            <div class="flex items-center gap-2 text-emerald-700 font-extrabold text-xs mb-2.5">
+              <div class="w-6 h-6 rounded-md bg-emerald-100 flex items-center justify-center">
+                <i class="fa-solid fa-leaf"></i>
+              </div>
+              <span id="txtOrganicLabel">जैविक उपचार</span>
             </div>
-            <p id="organicText" class="text-xs text-slate-600 leading-relaxed"></p>
+            <p id="organicText" class="text-xs font-medium text-slate-600 leading-relaxed"></p>
           </div>
 
-          <div class="bg-white p-5 rounded-xl border border-blue-100 shadow-sm">
-            <div class="flex items-center gap-2 text-blue-700 font-bold text-xs mb-2">
-              <i class="fa-solid fa-flask"></i> <span id="txtChemicalLabel">रासायनिक उपचार</span>
+          <!-- Chemical -->
+          <div class="glass-card p-5 rounded-3xl border-t-4 border-t-cyan-500 shadow-md">
+            <div class="flex items-center gap-2 text-cyan-700 font-extrabold text-xs mb-2.5">
+              <div class="w-6 h-6 rounded-md bg-cyan-100 flex items-center justify-center">
+                <i class="fa-solid fa-flask"></i>
+              </div>
+              <span id="txtChemicalLabel">रासायनिक उपचार</span>
             </div>
-            <p id="chemicalText" class="text-xs text-slate-600 leading-relaxed"></p>
+            <p id="chemicalText" class="text-xs font-medium text-slate-600 leading-relaxed"></p>
           </div>
         </div>
       </div>
@@ -143,7 +185,6 @@
     let selectedFile = null;
     let currentLang = 'hi';
 
-    // Clear phonetic text database to prevent speech engine looping glitches
     const SAMPLE_DB = [
       {
         crop_en: "Chili / Tomato", crop_hi: "मिर्च / टमाटर",
@@ -193,12 +234,12 @@
       const enBtn = document.getElementById('langEnBtn');
 
       if (lang === 'hi') {
-        hiBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-sm transition";
-        enBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-900 transition";
+        hiBtn.className = "px-3 py-1.5 text-xs font-extrabold rounded-lg bg-emerald-600 text-white shadow-md shadow-emerald-600/20 transition-all";
+        enBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-900 transition-all";
         document.getElementById('txtOnlineStatus').innerText = "एज AI सक्रिय";
         document.getElementById('txtUploadTitle').innerText = "पौधे की पत्ती स्कैन करें";
         document.getElementById('txtUploadDesc').innerText = "रोग की पहचान के लिए पौधे की पत्ती की फोटो अपलोड करें।";
-        document.getElementById('txtUploadPrompt').innerText = "पत्ती की फोटो चुनें या यहाँ छोड़ें";
+        document.getElementById('txtUploadPrompt').innerText = "पत्ती की फोटो चुनें या यहाँ खींचें";
         document.getElementById('txtBtnDiagnose').innerText = "AI द्वारा रोग पहचानें";
         document.getElementById('txtEmptyTitle').innerText = "पत्ती स्कैन की प्रतीक्षा है";
         document.getElementById('txtEmptyDesc').innerText = "अपनी पत्ती की फोटो अपलोड करें और 'AI द्वारा रोग पहचानें' पर क्लिक करें।";
@@ -207,8 +248,8 @@
         document.getElementById('txtOrganicLabel').innerText = "जैविक उपचार";
         document.getElementById('txtChemicalLabel').innerText = "रासायनिक उपचार";
       } else {
-        enBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 text-white shadow-sm transition";
-        hiBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-900 transition";
+        enBtn.className = "px-3 py-1.5 text-xs font-extrabold rounded-lg bg-emerald-600 text-white shadow-md shadow-emerald-600/20 transition-all";
+        hiBtn.className = "px-3 py-1.5 text-xs font-bold rounded-lg text-slate-600 hover:text-slate-900 transition-all";
         document.getElementById('txtOnlineStatus').innerText = "Edge AI Online";
         document.getElementById('txtUploadTitle').innerText = "Scan Plant Leaf";
         document.getElementById('txtUploadDesc').innerText = "Upload an authentic leaf photo for real AI disease diagnosis.";
@@ -255,7 +296,7 @@
       } catch (err) {
         renderResult(SAMPLE_DB[0]);
       } finally {
-        btn.innerHTML = `<i class="fa-solid fa-microchip"></i> <span id="txtBtnDiagnose">${currentLang === 'hi' ? 'AI द्वारा रोग पहचानें' : 'Run AI Diagnosis'}</span>`;
+        btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> <span id="txtBtnDiagnose">${currentLang === 'hi' ? 'AI द्वारा रोग पहचानें' : 'Run AI Diagnosis'}</span>`;
         btn.disabled = false;
       }
     }
@@ -273,7 +314,7 @@
       document.getElementById('cropTag').innerText = isHindi ? data.crop_hi : data.crop_en;
       document.getElementById('diseaseTitle').innerText = isHindi ? data.disease_hi : data.disease_en;
       document.getElementById('confScore').innerText = data.confidence + '%';
-      document.getElementById('severityText').innerText = '• ' + (isHindi ? data.severity_hi : data.severity_en);
+      document.getElementById('severityText').innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${isHindi ? data.severity_hi : data.severity_en}`;
       document.getElementById('organicText').innerText = isHindi ? data.organic_hi : data.organic_en;
       document.getElementById('chemicalText').innerText = isHindi ? data.chemical_hi : data.chemical_en;
     }
@@ -281,13 +322,8 @@
     function playVoiceAudio(lang) {
       if (!activeData) return;
 
-      // Stop any pending speech
-      if (window.responsiveVoice) {
-        window.responsiveVoice.cancel();
-      }
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
+      if (window.responsiveVoice) window.responsiveVoice.cancel();
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
 
       if (lang === 'hi') {
         const hindiText = activeData.voice_hi;
