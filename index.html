@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KrishiSetu — Smart Agro-AI Diagnostic Platform | SIH 2026</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- ResponsiveVoice CDN for fail-safe speech synthesis -->
   <script src="https://code.responsivevoice.org/responsivevoice.js?key=FREE_KEY"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -43,7 +42,7 @@
 </head>
 <body class="flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
 
-  <!-- Ambient Glow Effects -->
+  <!-- Glow Elements -->
   <div class="fixed top-12 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
   <div class="fixed bottom-12 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -63,7 +62,7 @@
         </div>
       </div>
       
-      <!-- Language Switcher & Edge Status -->
+      <!-- Language & Edge Status -->
       <div class="flex items-center gap-3">
         <div class="bg-slate-900/90 p-1 rounded-xl border border-slate-800 flex items-center gap-1 shadow-inner">
           <button id="langHiBtn" onclick="setAppLanguage('hi')" class="px-3.5 py-1.5 text-xs font-black rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-md transition-all">हिंदी</button>
@@ -241,15 +240,14 @@
     let selectedFile = null;
     let currentLang = 'hi';
 
-    // Scientifically accurate, phonetically clean crop database
     const SAMPLE_DB = [
       {
         crop_en: "Chili / Tomato", crop_hi: "मिर्च / टमाटर",
         disease_en: "Bacterial Leaf Spot (Xanthomonas)", disease_hi: "जीवाणु पत्ती धब्बा रोग (Leaf Spot)",
         confidence: 95.8,
         severity_en: "Moderate (Dark brown necrotic lesions detected)", severity_hi: "मध्यम प्रकोप (पत्तियों पर काले-भूरे धब्बे)",
-        organic_en: "Spray neem oil extract and remove infected lower foliage.", organic_hi: "नीम के तेल का अर्क छिड़कें और खराब पत्तियां हटाएं।",
-        chemical_en: "Foliar spray of Copper Oxychloride at two point five grams per litre water.", chemical_hi: "कॉपर ऑक्सीक्लोराइड ढाई ग्राम प्रति लीटर पानी में मिलाकर स्प्रे करें।",
+        organic_en: "Spray 5% Neem oil extract and remove infected lower foliage.", organic_hi: "नीम के तेल का अर्क छिड़कें और खराब पत्तियां हटाएं।",
+        chemical_en: "Foliar spray of Copper Oxychloride 50 WP @ 2.5g/L water.", chemical_hi: "कॉपर ऑक्सीक्लोराइड ढाई ग्राम प्रति लीटर पानी में मिलाकर स्प्रे करें।",
         voice_hi: "आपकी फसल में पत्ती धब्बा रोग पाया गया है। कॉपर ऑक्सीक्लोराइड ढाई ग्राम प्रति लीटर पानी में मिलाकर तुरंत छिड़काव करें।",
         voice_en: "Bacterial leaf spot detected on crop. Foliar spray of Copper Oxychloride is recommended."
       },
@@ -338,29 +336,82 @@
       }
     }
 
+    // Direct Browser Client-Side Plant/Foliage Detection
+    function validatePlantPixels(imgElement) {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 64;
+      canvas.height = 64;
+      ctx.drawImage(imgElement, 0, 0, 64, 64);
+      const imgData = ctx.getImageData(0, 0, 64, 64).data;
+      
+      let plantPixelCount = 0;
+      const totalPixels = 64 * 64;
+
+      for (let i = 0; i < imgData.length; i += 4) {
+        const r = imgData[i];
+        const g = imgData[i + 1];
+        const b = imgData[i + 2];
+
+        const isGreen = (g > r * 1.05 && g > b * 1.05);
+        const isFoliageBrown = (r > 70 && g > 65 && b < 60 && Math.abs(r - g) < 35);
+        
+        if (isGreen || isFoliageBrown) {
+          plantPixelCount++;
+        }
+      }
+      return (plantPixelCount / totalPixels) > 0.20;
+    }
+
     async function runDiagnosis() {
       const btn = document.getElementById('analyzeBtn');
       const reticle = document.getElementById('scannerReticle');
-      
+      const preview = document.getElementById('previewImg');
+
+      // Reject non-plant images (faces, rooms, objects) immediately
+      if (!validatePlantPixels(preview)) {
+        const msg = currentLang === 'hi' 
+          ? "अमान्य फोटो: पौधे या पत्ती की पहचान नहीं हो सकी। कृपया केवल फसल की पत्ती की फोटो अपलोड करें।" 
+          : "Invalid image: No plant or crop leaf detected. Please upload a clear leaf image.";
+        
+        alert(msg);
+        if (window.responsiveVoice) {
+          responsiveVoice.speak(
+            currentLang === 'hi' ? "कृपया किसी पौधे या पत्ती की स्पष्ट फोटो अपलोड करें" : "Please upload a valid crop leaf image", 
+            currentLang === 'hi' ? "Hindi Female" : "UK English Female"
+          );
+        }
+        document.getElementById('resultCard').classList.add('hidden');
+        document.getElementById('emptyState').classList.remove('hidden');
+        return;
+      }
+
       btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${currentLang === 'hi' ? 'जांच जारी है...' : 'Analyzing...'}`;
       btn.disabled = true;
-      reticle.classList.remove('hidden');
+      if (reticle) reticle.classList.remove('hidden');
 
       const formData = new FormData();
       formData.append('file', selectedFile);
 
       try {
         const response = await fetch('http://127.0.0.1:8000/predict', { method: 'POST', body: formData });
-        const result = await response.json();
-        renderResult(result.data);
+        const res = await response.json();
+
+        if (res.status === "error") {
+          alert(currentLang === 'hi' ? res.message_hi : res.message);
+          document.getElementById('resultCard').classList.add('hidden');
+          document.getElementById('emptyState').classList.remove('hidden');
+        } else {
+          renderResult(res.data);
+        }
       } catch (err) {
         renderResult(SAMPLE_DB[0]);
       } finally {
         setTimeout(() => {
-          reticle.classList.add('hidden');
+          if (reticle) reticle.classList.add('hidden');
           btn.innerHTML = `<i class="fa-solid fa-microchip"></i> <span id="txtBtnDiagnose">${currentLang === 'hi' ? 'AI द्वारा रोग पहचानें' : 'Run AI Diagnosis'}</span>`;
           btn.disabled = false;
-        }, 500);
+        }, 400);
       }
     }
 
